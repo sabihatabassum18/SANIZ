@@ -139,6 +139,8 @@
 //   )
 // }
 
+import Link from "next/link";
+
 export default function LandingPage() {
   return (
     <div className="bg-gradient-to-br from-purple-700 to-indigo-900 text-white">
@@ -154,9 +156,11 @@ export default function LandingPage() {
               Effortlessly create stunning, personalized photos using the power of artificial intelligence.
             </p>
             <div className="flex flex-col md:flex-row gap-4">
-              <button className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg">
-                Try Now for Free
-              </button>
+              <Link href="/login">
+                <button className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg">
+                  Try Now for Free
+                </button>
+              </Link>
               <button className="bg-transparent border border-white text-white font-bold py-3 px-6 rounded-lg hover:bg-white hover:text-indigo-900 transition">
                 Learn How It Works
               </button>

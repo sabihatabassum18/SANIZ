@@ -49,6 +49,8 @@ const authUser = asyncHandler(async (req, res) => {
                 name: user.name,
                 email: user.email,
                 token: generateToken(user._id),
+                creditToken: user.token,
+                subscriptionType: user.subscription.type,
             })
         );
     } else {

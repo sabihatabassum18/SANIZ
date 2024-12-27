@@ -1,22 +1,26 @@
+"use client";
+
+import { useSession } from "next-auth/react"
 
 const tiers = [
     {
         name: 'Basic',
         id: 'tier-hobby',
-        href: '#',
+        href: 'https://buy.stripe.com/test_dR6aFN8q6apQb0A5kk',
         priceMonthly: '$9.99',
         description: "The perfect plan if you're just getting started with our product.",
-        features: ['100 Image Generate', 'Up to 500 generation', 'Advanced Generation', '24-hour support response time'],
+        features: ['300 Token', 'Advanced Generation', '24-hour support response time'],
         featured: false,
+        link: 'https://buy.stripe.com/test_dR6aFN8q6apQb0A5kk',
     },
     {
         name: 'Enterprise',
         id: 'tier-enterprise',
-        href: '#',
+        href: 'https://buy.stripe.com/test_aEU29hgWCapQ4Cc3cd',
         priceMonthly: '$99.99',
         description: 'Dedicated support and infrastructure for your company.',
         features: [
-            'Unlimited 2d and 3d image generation',
+            '5000 Token',
             'Advanced generation',
             'Dedicated support representative',
             'Custom integrations',
@@ -25,6 +29,7 @@ const tiers = [
 
         ],
         featured: true,
+        link: '/pricing',
     },
 ]
 
@@ -33,6 +38,12 @@ function classNames(...classes) {
 }
 
 export default function Pricing() {
+    const { data: session } = useSession()
+    console.log(session)
+
+    tiers[1].href = tiers[1].href + `?prefilled_promo_code=${session?.user.id}`
+    tiers[0].href = tiers[0].href + `?prefilled_promo_code=${session?.user.id}`
+
     return (
         <div className="relative isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
             <div aria-hidden="true" className="absolute inset-x-0 -top-3 -z-10 transform-gpu overflow-hidden px-36 blur-3xl">
