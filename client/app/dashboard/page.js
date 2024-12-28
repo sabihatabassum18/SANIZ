@@ -1,13 +1,30 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut, signIn } from "next-auth/react";
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { getSession } from "next-auth/react";
+
+export async function updateSessionData(updatedData) {
+    const session = await getSession();
+    console.log("Session before update:", session);
+    // Use `signIn` to update the session with new data
+    await signIn("credentials", {
+        redirect: false, // Prevent page reload
+        session: {
+            ...session,
+            user: {
+                ...session.user,
+                ...updatedData,
+            },
+        },
+    });
+}
 
 
 export default function Dashboard() {
-    const { data: session } = useSession();
+    const { data: session, update } = useSession();
 
     const [imageUrl, setImageUrl] = useState("https://news.ubc.ca/wp-content/uploads/2023/08/AdobeStock_559145847.jpeg");
     const [loading, setLoading] = useState(false);
@@ -30,6 +47,8 @@ export default function Dashboard() {
                 setLoading(false);
                 return;
             }
+
+            refreshSession();
 
             const response = await axios.post(
                 "http://localhost:8000/api/image-generation",
@@ -87,6 +106,39 @@ export default function Dashboard() {
             URL.revokeObjectURL(url);
         } catch (error) {
             console.error("Error downloading the image", error);
+        }
+    };
+
+    const refreshSession = async () => {
+        const token = session?.user?.accessToken;
+        if (!token) {
+            return;
+        }
+        try {
+            const response = await fetch("http://localhost:8000/api/users/profile", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const updatedData = await response.json();
+
+            // Update session with the latest data
+            const updateDto = {
+                creditToken: updatedData.token,
+                subscriptionType: updatedData.subscription.type,
+            }
+
+            const res = await fetch("/api/update-session", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updateDto),
+            });
+            await update(updateDto);
+            console.log("Session updated:", updateDto);
+        } catch (error) {
+            console.error("Failed to refresh session:", error);
         }
     };
 

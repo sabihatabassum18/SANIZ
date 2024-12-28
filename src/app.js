@@ -33,18 +33,18 @@ app.use(morgan('tiny'));
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 app.post('/webhook', async (req, res) => {
-    // const sig = req.headers['stripe-signature'];
-    // let event;
+    const sig = req.headers['stripe-signature'];
+    let event;
 
-    // try {
-    //     // Verify the webhook signature and construct the event
-    //     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-    // } catch (err) {
-    //     console.error('Webhook signature verification failed:', err.message);
-    //     return res.status(400).send(`Webhook error: ${err.message}`);
-    // }
+    try {
+        // Verify the webhook signature and construct the event
+        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err) {
+        console.error('Webhook signature verification failed:', err.message);
+        return res.status(400).send(`Webhook error: ${err.message}`);
+    }
 
-    const event = req.body;
+    // const event = req.body;
 
     // Handle the event types you are interested in
     switch (event.type) {
