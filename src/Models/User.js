@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
         subscription: {
             type: {
                 type: String,
-                enum: ['trial', 'premium'],
+                enum: ['trial', 'Premium'],
                 default: 'trial',
             },
             subscription_id: { type: String, default: null }, // External subscription ID

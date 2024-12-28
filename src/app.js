@@ -59,8 +59,10 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (request, 
             if (user) {
                 if (amount < 10) {
                     user.token += 300;
+                    user.subscription.type = 'Premium';
                 } else {
                     user.token += 3000;
+                    user.subscription.type = 'Premium';
                 }
                 await user.save();
             }
