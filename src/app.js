@@ -32,19 +32,23 @@ app.use(morgan('tiny'));
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-app.use('/webhook', express.raw({ type: 'application/json' }));
-
-app.post('/webhook', async (req, res) => {
-    const sig = req.headers['stripe-signature'];
-    let event;
-
-
-    try {
-        // Verify the webhook signature and construct the event
-        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-    } catch (err) {
-        console.error('Webhook signature verification failed:', err.message);
-        return res.status(400).send(`Webhook error: ${err.message}`);
+app.post('/webhook', express.raw({ type: 'application/json' }), async (request, response) => {
+    let event = request.body;
+    // Only verify the event if you have an endpoint secret defined.
+    // Otherwise use the basic event deserialized with JSON.parse
+    if (endpointSecret) {
+        // Get the signature sent by Stripe
+        const signature = request.headers['stripe-signature'];
+        try {
+            event = stripe.webhooks.constructEvent(
+                request.body,
+                signature,
+                endpointSecret
+            );
+        } catch (err) {
+            console.log(`⚠️  Webhook signature verification failed.`, err.message);
+            return response.sendStatus(400);
+        }
     }
 
     // const event = req.body;
