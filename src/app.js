@@ -32,9 +32,12 @@ app.use(morgan('tiny'));
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+app.use('/webhook', express.raw({ type: 'application/json' }));
+
 app.post('/webhook', async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event;
+
 
     try {
         // Verify the webhook signature and construct the event
