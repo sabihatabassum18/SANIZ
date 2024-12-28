@@ -19,16 +19,6 @@ const app = express();
 app.use(cors());
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
-// Routes
-app.use('/api/users', userRoutes);
-app.use('/api', imageRoutes);
-
-// Error Handler
-app.use(errorHandler);
-
-// log every request to the console
-app.use(morgan('tiny'));
-
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 app.post('/webhook', express.raw({ type: 'application/json' }), async (request, response) => {
@@ -101,6 +91,16 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (request, 
 });
 
 app.use(express.json());
+
+// Routes
+app.use('/api/users', userRoutes);
+app.use('/api', imageRoutes);
+
+// Error Handler
+app.use(errorHandler);
+
+// log every request to the console
+app.use(morgan('tiny'));
 
 
 export default app;
