@@ -17,7 +17,6 @@ const app = express();
 
 // Middleware
 app.use(cors());
-app.use(express.json());
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 // Routes
@@ -100,5 +99,8 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (request, 
     // Acknowledge receipt of the event by returning a 200 response
     res.status(200).send('Event received');
 });
+
+app.use(express.json());
+
 
 export default app;
