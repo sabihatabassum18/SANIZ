@@ -93,10 +93,10 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (request, 
 app.use(express.json());
 
 // Routes
-app.use('/api/users', userRoutes);
-app.use('/api', imageRoutes);
+app.use('/api/users', express.json(), userRoutes);
+app.use('/api', express.json(), imageRoutes);
 
-// Error Handler
+// Error Handler Middleware
 app.use(errorHandler);
 
 // log every request to the console
