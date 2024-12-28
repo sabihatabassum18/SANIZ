@@ -97,7 +97,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (request, 
     }
 
     // Acknowledge receipt of the event by returning a 200 response
-    res.status(200).send('Event received');
+    response.status(200).send('Event received');
 });
 
 app.use(express.json());
